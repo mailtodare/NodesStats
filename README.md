@@ -21,8 +21,6 @@
 
 NodeStats is an API to handle node statistics.
 
-<p align="right">(<a href="#top">back to top</a>)</p>
-
 ## Thought Process
 
 The nodes can be of different types e.g. IoT node. In this test, with no specific type of nodes specified, nodes points web points therefore web forms will be used to mock nodes operations.
