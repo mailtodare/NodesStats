@@ -1,0 +1,30 @@
+<?php
+namespace App\Http\Traits;
+
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Http\Request;
+use App\Models\NodePoint;
+use App\Models\NodeStatsEntry;
+use App\Models\User;
+
+trait AllRedirects {
+    
+    public function toNode(){
+        $role = auth()->user()->user_role;
+        error_log("------------- -----------------");
+
+        switch($role){
+            case 2:
+                if(auth()->user()->node_id){ // open to node dashboard
+                return redirect('/node'); 
+                } else{ // return to add node
+                    return redirect('node/addnode');
+                }
+                break;            
+            case 10:
+                return redirect('/admin');
+                break;
+        } 
+        return redirect('/home');
+    }
+}
