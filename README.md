@@ -19,16 +19,16 @@
 
 ## About The Project
 
-NodeStats is an API to handle node statistics.
+NodeStats is an API to handle nodes statistics. Several node points connected to the API relay their system info to it for necessary centralized management purposes. 
 
 ## Thought Process
 
-The nodes can be of different types e.g. IoT node. In this test, with no specific type of nodes specified, nodes points web points therefore web forms will be used to mock nodes operations.
-
+The nodes can be of different types e.g. IoT nodes. In this test, with no specific type of nodes specified, web points were considered. Therefore, web forms will be used to mock nodes operations. Laravel will be used to develop the solution. 
+    
 Every node first needs to be registered before its entries can be processed, and for necessary authentication and authorisation. Node entities will be modelled to “Node” with corresponding “nodes” table with fields. If every node has its admin, which must first be authenticated before granting access to create node account.
-
+    
 There should be a Super Admin who will have access to all nodes or group of nodes. This admin will be able to view all logged nodes stats and filter for specific node(s). Should be able to delete node(s) account(s) which will delete all the nodes references in the database. Set purge time, hourly scheduling of nodes entry starts with purge.
-  
+
   <p align="right">(<a href="#top">back to top</a>)</p>
 
 ### Summary of Models
@@ -36,11 +36,12 @@ There should be a Super Admin who will have access to all nodes or group of node
 #### Node
 
 * Fields: `node_name`, `node_description`, `password`, (other node’s parameters), `admin_id`, `created_at`.
-* Operations: create account, edit account, login, make entry, view own entries, logout
+* Operations: create account, edit account, make entry, view own entries, logout
 
 #### Node Entry
 
-* Fields: ID, 
+* Fields: ID, `comment`, `ram_use`, `disk_used`.
+* Operations: Create, view, paginate, delete,
 
 #### Node Admin
 
@@ -54,13 +55,13 @@ There should be a Super Admin who will have access to all nodes or group of node
 
   <p align="right">(<a href="#top">back to top</a>)</p>
   
-### Nodes characteristics
+### Nodes characteristics | Assumptions
 
-*	Same parameters should not be expected from Nodes as they might not be of same type
+*	Same parameters should not be expected from Nodes as they might not be of same type and user.
 *	Individual Node properties/specifications will be fairly unchanged overtime.
 *	Node’s entry data may be best stored in a single Json column. This will reduce number of unique columns that have to be created for different nodes that will share same table together. 
-*	Similar json column may be used for json Node entities too, for there system specifications. This will equally reduce number of unique columns while permitting different properties to be captured.
-*	Due to nodes uniqueness, their entries should come at there own designated time. But the test may use the server schedule times to request entries from nodes.
+*	Similar json column may be used for json Node entities too, for their system specifications. This will equally reduce number of unique columns while permitting different properties to be stored..
+*	•	Due to nodes uniqueness, their entries should come at their own designated time. But the test may use the server schedule times to request entries from nodes.
   
   <p align="right">(<a href="#top">back to top</a>)</p>
 
@@ -77,14 +78,34 @@ Authenticated Node will have access to relay its stats to NodeStats, view previo
 ### Navigation
 #### No authenticated user recognised: 
 
-*	Redirect to home page – with links – `Node` | `Admin` (System Admin)
+*	Redirect to index page – with links.
 
 #### Authenticated user
 ##### Is Node
-* Redirect to Node landing page. Can `log new`, `view previuos log`, `logout`.
+* Redirect to Create New Node page.
+* Can log stats, edit Node parameters, view previous logs, logout.
+* Can only manage one node. So once created, access to creation page is prevented.
+* Can not see logs of other nodes.
 
 ##### Is Admin
 * Redirect to Admin landing page. Can `view logs`, `delete nodes | logs`, `logout`.
   
   <p align="right">(<a href="#top">back to top</a>)</p>
+    
+## Implemented
+The app presents a landing page accessible to all guests, only. Protected routes [ create new node, node dashboard, admin dashboard] were adequately protected.
+Some validation logistics were implemented to ensure some measure of relativity of the expected data.
+    
+The Node total disk value is used as reference to evaluate other numerical properties. Max expected values of other three parameters are set thus; Allocated Disk is set at 75%, Total Ram is 15% while Allocated Ram is 75% of Total Ram.
+    
+Pagination of result set is set at 10 entries per page.
+    
+As at time of reporting, the “schedule” of Console Kernel is yet to be perfected. While it schedules as desired, the tasks attached were not accordingly implemented.
+    
+Docker-compose yml file requested is yet to be ready, as I struggled with its implementation. I had challenge making it run as the application runs on outside the container for my dependencies versions.
+    
+## Scalability
+
+The app will scale by the number of nodes connected to it, its qualitative relevance in system management, amount of diagnosis it runs, its reporting methodologies among others.
+The application should be able to deal with various data that will be feed to it at little or no additional development overhead. That’s, it must be agile to accept different data sets. Its data storage must be efficiently setup to cope with high traffics at low latency.
 
