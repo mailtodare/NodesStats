@@ -20,7 +20,7 @@ class JustNodeAdmin
     {
         $user = Auth::user();
         if($user)
-            if($user->user_role == 10) //is super admin
+            if($user->user_role == 2) //is node admin
                 return $next($request);
             else return redirect('/home'); 
         return redirect('/login');
