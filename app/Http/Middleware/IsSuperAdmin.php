@@ -18,8 +18,11 @@ class IsSuperAdmin
      */
     public function handle(Request $request, Closure $next)
     {
-        if(Auth::user()->user_role == 10) //is super admin
-            return $next($request);
-        else return redirect('/home');
+        $user = Auth::user();
+        if($user)
+            if($user->user_role == 10) //is super admin
+                return $next($request);
+            else return redirect('/home'); 
+        return redirect('/login');
     }
 }
